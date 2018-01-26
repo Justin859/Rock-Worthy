@@ -1,0 +1,26 @@
+{% load staticfiles %}
+{% load compress %}
+<!doctype html>
+<html amp lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <!-- Bootstrap CSS -->
+    {% compress css inline %}
+    <link rel="stylesheet" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+    {% endcompress %}
+
+    <title>Hello, world!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, shrink-to-fit=no">
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+
+    {% compress js inline %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'vendor/bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    {% endcompress %}
+  </body>
+</html>

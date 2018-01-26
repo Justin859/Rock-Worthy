@@ -9,6 +9,11 @@ verify_ssl = true
 django = "*"
 gunicorn = "*"
 django-heroku = "*"
+requests = "*"
+django-storages = "*"
+django-compressor = "*"
+boto = "*"
+"boto3" = "*"
 
 
 [requires]
