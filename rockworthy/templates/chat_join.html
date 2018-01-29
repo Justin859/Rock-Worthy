@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+    <style>
+            @charset "utf-8";
+            /* CSS Document */
+            
+            /* ---------- GENERAL ---------- */
+            
+            body {
+                background: #e9e9e9;
+                color: #9a9a9a;
+                font: 100%/1.5em "Droid Sans", sans-serif;
+                margin: 0;
+            }
+            
+            a { text-decoration: none; }
+            
+            fieldset {
+                border: 0;
+                margin: 0;
+                padding: 0;
+            }
+            
+            h4, h5 {
+                line-height: 1.5em;
+                margin: 0;
+            }
+            
+            hr {
+                background: #e9e9e9;
+                border: 0;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+                height: 1px;
+                margin: 0;
+                min-height: 1px;
+            }
+            
+            img {
+                border: 0;
+                display: block;
+                height: auto;
+                max-width: 100%;
+            }
+            
+            input {
+                border: 0;
+                color: inherit;
+                font-family: inherit;
+                font-size: 100%;
+                line-height: normal;
+                margin: 0;
+            }
+            
+            p { margin: 0; }
+            
+            .clearfix { *zoom: 1; } /* For IE 6/7 */
+            .clearfix:before, .clearfix:after {
+                content: "";
+                display: table;
+            }
+            .clearfix:after { clear: both; }
+            
+            /* ---------- LIVE-CHAT ---------- */
+            
+            #live-chat {
+                bottom: 0;
+                font-size: 12px;
+                right: 24px;
+                position: fixed;
+                width: 300px;
+            }
+            
+            #live-chat header {
+                background: #293239;
+                border-radius: 5px 5px 0 0;
+                color: #fff;
+                cursor: pointer;
+                padding: 16px 24px;
+            }
+            
+            #live-chat h4:before {
+                background: #1a8a34;
+                border-radius: 50%;
+                content: "";
+                display: inline-block;
+                height: 8px;
+                margin: 0 8px 0 0;
+                width: 8px;
+            }
+            
+            #live-chat h4 {
+                font-size: 12px;
+            }
+            
+            #live-chat h5 {
+                font-size: 10px;
+            }
+            
+            #live-chat .form {
+                padding: 24px;
+            }
+            
+            #live-chat input[type="text"] {
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                padding: 8px;
+                outline: none;
+                width: 234px;
+            }
+            
+            .chat-message-counter {
+                background: #e62727;
+                border: 1px solid #fff;
+                border-radius: 50%;
+                display: none;
+                font-size: 12px;
+                font-weight: bold;
+                height: 28px;
+                left: 0;
+                line-height: 28px;
+                margin: -15px 0 0 -15px;
+                position: absolute;
+                text-align: center;
+                top: 0;
+                width: 28px;
+            }
+            
+            .chat-close {
+                background: #1b2126;
+                border-radius: 50%;
+                color: #fff;
+                display: block;
+                float: right;
+                font-size: 10px;
+                height: 16px;
+                line-height: 16px;
+                margin: 2px 0 0 0;
+                text-align: center;
+                width: 16px;
+            }
+            
+            .chat {
+                background: #fff;
+            }
+            
+            .chat-history {
+                height: 252px;
+                padding: 8px 24px;
+                overflow-y: scroll;
+            }
+            
+            .chat-message {
+                margin: 16px 0;
+            }
+            
+            .chat-message img {
+                border-radius: 50%;
+                float: left;
+            }
+            
+            .chat-message-content {
+                margin-left: 56px;
+            }
+            
+            .chat-time {
+                float: right;
+                font-size: 10px;
+            }
+            
+            .chat-feedback {
+                font-style: italic;	
+                margin: 0 0 0 80px;
+            }    
+    </style>
+{% endblock %}
+{% block content %}
+
+<header>
+    <a href="https://www.twilio.com/docs/api/chat/guides/quickstart-js" 
+      target="_blank">Read the getting started guide
+        <i class="fa fa-fw fa-external-link"></i>
+      </a>
+  </header>
+
+  <section>
+    <!--<div id="messages"></div>
+    <input id="chat-input" type="text" placeholder="say anything" autofocus/>-->
+  </section>
+
+
+  <div id="live-chat">
+		
+		<header class="clearfix">
+			
+			<a href="#" class="chat-close">x</a>
+
+			<h4>{{request.user.first_name}} {{request.user.last_name}}</h4>
+
+			<span class="chat-message-counter">3</span>
+
+		</header>
+
+		<div class="chat">
+			
+			<div id="messages" class="chat-history">
+				
+			</div> <!-- end chat-history -->
+
+            <p class="chat-feedback" style="visibility: hidden;">Member is typing</p>
+
+            <div class="form">
+                <fieldset>
+                    <input id="chat-input" type="text" placeholder="Type message..." autofocus/>
+                    <input type="hidden">
+                </fieldset>
+            </div>
+
+		</div> <!-- end chat -->
+
+	</div> <!-- end live-chat -->
+
+  <script src="https://media.twiliocdn.com/sdk/js/chat/v1.0/twilio-chat.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(function() {
+
+        // Get handle to the chat div 
+        var $chatWindow = $('#messages');
+    
+        // Our interface to the Chat service
+        var chatClient;
+    
+        // A handle to the "general" chat channel - the one and only channel we
+        // will have in this sample app
+        var generalChannel;
+    
+        // The server will assign the client a random username - store that value
+        // here
+        var username;
+
+        $.getJSON('/user-chat-join/?id=' + 2, {
+        }, function(data) {
+            generalChannel = data.channel
+        });
+    
+        // Helper function to print info messages to the chat window
+        function print(infoMessage, asHtml) {
+            var $msg = $('<div class="info">');
+            if (asHtml) {
+                $msg.html(infoMessage);
+            } else {
+                $msg.text(infoMessage);
+            }
+            $chatWindow.append($msg);
+        }
+    
+        // Helper function to print chat message to the chat window
+        function printMessage(fromUser, message) {
+            var $user = $('<h5>').text(fromUser + ':');
+            if (fromUser === username) {
+                $user.addClass('me');
+            }
+            var $image = $('<img src="https://exelord.github.io/ember-initials/images/default-d5f51047d8bd6327ec4a74361a7aae7f.jpg" alt="" width="32" height="32">');
+            var $messageContent = $('<div class="chat-message-content clearfix">');
+            var $message = $('<p>').text(message);
+            var $container = $('<div class="chat-message clearfix">');
+            $container.append($image);
+            $container.append($messageContent);
+            $messageContent.append($user)
+                        .append($message)
+                        .append('<hr>');
+            $chatWindow.append($container);
+            $chatWindow.scrollTop($chatWindow[0].scrollHeight);
+        }
+    
+        // Alert the user they have been assigned a random username
+        print('Logging in...');
+    
+        // Get an access token for the current user, passing a username (identity)
+        // and a device ID - for browser-based apps, we'll always just use the 
+        // value "browser"
+        $.getJSON('/token/', {
+            device: 'browser',
+        }, function(data) {
+            // Alert the user they have been assigned a random username
+            username = data.identity;
+            print('You have been identified as : ' 
+                + '<span class="me">' + username + '</span>', true);
+    
+            // Initialize the Chat client
+            chatClient = new Twilio.Chat.Client(data.token);
+            chatClient.getSubscribedChannels().then(createOrJoinGeneralChannel);
+        });
+    
+        function createOrJoinGeneralChannel() {
+            // Get the general chat channel, which is where all the messages are
+            // sent in this simple application
+            print('Attempting to join "general" chat channel...');
+            var promise = chatClient.getChannelByUniqueName(generalChannel);
+            promise.then(function(channel) {
+                generalChannel = channel;
+                console.log('Found general channel:');
+                console.log(generalChannel);
+                setupChannel();
+            });
+        }
+    
+        // Set up channel after it has been found
+        function setupChannel() {
+            // Join the general channel
+            generalChannel.join().then(function(channel) {
+                print('Joined channel as ' 
+                    + '<span class="me">' + username + '</span>.', true);
+            });
+    
+            // Listen for new messages sent to the channel
+            generalChannel.on('messageAdded', function(message) {
+                printMessage(message.author, message.body);
+            });
+            //set up the listener for the typing started Channel event
+            generalChannel.on('typingStarted', function(member) {
+                //process the member to show typing
+                //updateTypingIndicator(member, true);
+                $('.chat-feedback').text(member.identity + ' is  typing...').css('visibility','visible');
+            });
+            //set  the listener for the typing ended Channel event
+            generalChannel.on('typingEnded', function(member) {
+                //process the member to stop showing typing
+                //updateTypingIndicator(member, false);
+                $(".chat-feedback").css('visibility','hidden');
+            });
+        }
+    
+        // Send a new message to the general channel
+        var $input = $('#chat-input');
+        $input.on('keydown', function(e) {
+            if (e.keyCode == 13 && generalChannel) {
+                generalChannel.sendMessage($input.val())
+                $input.val('');
+            } else {
+                // else send the Typing Indicator signal
+                generalChannel.typing();
+            }
+        });
+
+    });
+    
+</script>
+
+{% endblock %}

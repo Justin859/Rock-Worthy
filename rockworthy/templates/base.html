@@ -9,6 +9,7 @@
     {% compress css inline %}
     <link rel="stylesheet" href="{% static 'vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
     {% endcompress %}
+    {% block styles %}{% endblock %}
 
     <title>Hello, world!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, shrink-to-fit=no">

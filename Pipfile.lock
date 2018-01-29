@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "49f09a42f1db714762453b36c9fa64a5e6433cb5404bd844e1a621a49bb52621"
+            "sha256": "d042eac49705526d9a486cfae5672a6c696429468f46ef7a1706add2a30fd9b0"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -134,6 +134,12 @@
             ],
             "version": "==0.9.3"
         },
+        "jsonify": {
+            "hashes": [
+                "sha256:f340032753577575e9777835809b283fdc9b251867d5d5600389131647f8bfe1"
+            ],
+            "version": "==0.5"
+        },
         "psycopg2": {
             "hashes": [
                 "sha256:594aa9a095de16614f703d759e10c018bdffeafce2921b8e80a0e8a0ebbc12e5",
@@ -169,6 +175,20 @@
                 "sha256:5c3213be557d0468f9df8fe2487eaf2990d9799202c5ff5cb8d394d09fad9b2a"
             ],
             "version": "==2.7.3.2"
+        },
+        "pyjwt": {
+            "hashes": [
+                "sha256:a4e5f1441e3ca7b382fd0c0b416777ced1f97c64ef0c33bfa39daf38505cfd2f",
+                "sha256:500be75b17a63f70072416843dc80c8821109030be824f4d14758f114978bae7"
+            ],
+            "version": "==1.5.3"
+        },
+        "pysocks": {
+            "hashes": [
+                "sha256:3fe52c55890a248676fd69dc9e3c4e811718b777834bcaab7a8125cf9deac672"
+            ],
+            "markers": "python_version >= '3.0'",
+            "version": "==1.6.8"
         },
         "python-dateutil": {
             "hashes": [
@@ -223,6 +243,13 @@
                 "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
             ],
             "version": "==1.11.0"
+        },
+        "twilio": {
+            "hashes": [
+                "sha256:be6fd048b419ab975266497eccf58404ddc1d24caea9a9afea439c0c334aa214",
+                "sha256:15f07e0cdffd2adb5942190fe8e198e4991ec9b563ecd318b13783ea685a327a"
+            ],
+            "version": "==6.10.1"
         },
         "urllib3": {
             "hashes": [

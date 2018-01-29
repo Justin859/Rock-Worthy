@@ -14,6 +14,8 @@ django-storages = "*"
 django-compressor = "*"
 boto = "*"
 "boto3" = "*"
+twilio = "*"
+"jsonify;" = "*"
 
 
 [requires]
